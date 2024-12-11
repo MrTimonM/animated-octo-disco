@@ -99,13 +99,13 @@ else
 fi
 
 show "Creating systemd service..." "progress"
-if ! bash -c "cat > $SERVICE_FILE <<EOF
+cat > $SERVICE_FILE <<EOF
 [Unit]
 Description=Nexus XYZ Prover Service
 After=network.target
 
 [Service]
-User=$USER
+User=root
 WorkingDirectory=$HOME/network-api/clients/cli
 Environment=NONINTERACTIVE=1
 ExecStart=$HOME/.cargo/bin/cargo run --release --bin prover -- beta.orchestrator.nexus.xyz
@@ -114,10 +114,7 @@ RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
-EOF"; then
-    show "Failed to create the systemd service file." "error"
-    exit 1
-fi
+EOF
 
 show "Reloading systemd and starting the service..." "progress"
 if ! systemctl daemon-reload; then
